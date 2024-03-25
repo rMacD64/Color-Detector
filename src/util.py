@@ -4,7 +4,7 @@ import cv2 as cv
 def colour_limits(colour):
     # converts bgr values to hsv colour space
     # commonly used for object tracking
-    c = np.unint8([[colour]])
+    c = np.uint8([[colour]])
     hsvC = cv.cvtColor(c, cv.COLOR_BGR2HSV)
 
     # not sure what this does...

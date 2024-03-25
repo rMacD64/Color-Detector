@@ -26,7 +26,10 @@ while True:
     hsvImg = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
     # get bounds from util function
-    lowLimit, upLimit = colour_limits(colour=RED)
+    # lowLimit, upLimit = colour_limits(colour=RED)
+    # define range of blue color in HSV
+    lowLimit = np.array([160, 50, 50])
+    upLimit = np.array([180, 255, 255])
 
     mask = cv.inRange(hsvImg, lowLimit, upLimit)
 
@@ -50,7 +53,7 @@ while True:
     # a key is pressed. Parameter of 1 produces
     # constant images.
     # the following essentially means we will
-    # stop recording frames when any key is pressed
+    # stop recording frames when 'q' is pressed
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
 
