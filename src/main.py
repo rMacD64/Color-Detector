@@ -17,12 +17,11 @@ upper_limit_HSV = np.array([178, 255, 255])
 # upper_limit_LAB = np.array([0, 128, 127])
 lower_limit_LAB = np.array([20, 150, 150])
 upper_limit_LAB = np.array([190, 255, 255])
-BORDER_COLOUR = (0, 255, 0)
+BORDER_COLOUR = (255, 0, 0)
 BORDER_THICKNESS = 3
-CENTRE_COLOUR = (0, 0, 0)
+CENTRE_COLOUR = (0, 255, 0)
 CENTRE_RADIUS = 5
-MESSAGE = 'Red Detected'
-TEXT_COLOR = (0, 0, 0)
+TEXT_COLOR = (0, 255, 0)
 THRESHOLD = 100 # can be adjusted to determine the distance at which we should identify objects
 
 # VideoCapture() opens camera
@@ -64,7 +63,7 @@ while True:
             # Draw centre circle on output frame
             cv.circle(output_frame, (cx, cy), CENTRE_RADIUS, CENTRE_COLOUR, -1)
             # Put text on output frame
-            cv.putText(output_frame, MESSAGE, (cx, cy), cv.FONT_HERSHEY_SIMPLEX, 1, TEXT_COLOR, 1)  # put text
+            cv.putText(output_frame, str(cx) + ',' + str(cy), (cx, cy), cv.FONT_HERSHEY_SIMPLEX, 1, TEXT_COLOR, 1)  # put text
 
     # Show image:
     cv.imshow("Red Detector", output_frame)
