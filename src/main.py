@@ -1,15 +1,32 @@
 import numpy as np
 import cv2 as cv
-from PIL import Image
+import imutils
 
-from util import colour_limits
+# from util import colour_limits
+
+# recommended range of colors in HSV color space
+lower_limit_HSV = np.array([161, 165, 127])
+upper_limit_HSV = np.array([178, 255, 255])
+
+# previous range of colors in HSV color space
+# lower_limit_HSV = np.array([160, 50, 50])
+# upper_limit_HSV = np.array([180, 255, 255])
+
+# range of colors in Lab color space
+# lower_limit_LAB = np.array([64, 59, 32])
+# upper_limit_LAB = np.array([0, 128, 127])
+lower_limit_LAB = np.array([20, 150, 150])
+upper_limit_LAB = np.array([190, 255, 255])
+BORDER_COLOUR = (0, 255, 0)
+BORDER_THICKNESS = 3
+CENTRE_COLOUR = (0, 0, 0)
+CENTRE_RADIUS = 5
+MESSAGE = 'Red Detected'
+TEXT_COLOR = (0, 0, 0)
+THRESHOLD = 100 # can be adjusted to determine the distance at which we should identify objects
 
 # VideoCapture() opens camera
-# 0 is default camera, but may take string or other index
-# to change camera settings
-RED = [255, 0, 0]
-BB_COLOUR = (0, 255, 0)
-BB_THICKNESS = 5
+# 0 is the default camera, but may take string or other index
 ID = 0
 cap = cv.VideoCapture(ID)
 
@@ -18,36 +35,39 @@ if not cap.isOpened():
     exit()
 
 while True:
-    # captures frame by frame and ret is false
-    # if frame cannot be detected
+    # Captures frame by frame and ret is false if frame cannot be detected
     ret, frame = cap.read()
+    if not ret:
+        break
+    output_frame = frame.copy()
 
-    # convert to hsv colour space
-    hsvImg = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    # Blur the image for processing
+    # medianBlur preserves edges and is beneficial for high contrast
+    # blurred_frame = cv.medianBlur(frame, 3)
 
-    # get bounds from util function
-    # lowLimit, upLimit = colour_limits(colour=RED)
-    # define range of blue color in HSV
-    lowLimit = np.array([160, 50, 50])
-    upLimit = np.array([180, 255, 255])
+    frame_lab = cv.cvtColor(frame, cv.COLOR_BGR2Lab)
+    # frame_hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    mask = cv.inRange(frame_lab, lower_limit_LAB, upper_limit_LAB)
 
-    mask = cv.inRange(hsvImg, lowLimit, upLimit)
+    # Find contours:
+    contours = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
 
-    # creates pillow image of array
-    maskImg = Image.fromarray(mask)
+    for c in contours:
+        if cv.contourArea(c) > THRESHOLD:  # only if countour is big enough, then
+            M = cv.moments(c)
+            cx = int(M['m10'] / (M['m00'] + 1e-5))  # calculate X position and add 1e-5 to avoid division by 0
+            cy = int(M['m01'] / (M['m00'] + 1e-5))  # calculate Y position
 
-    # returns None if colour not detected or coordinates
-    # if it is
-    colourBB = maskImg.getbbox()
+            # Draw contours on output frame
+            cv.drawContours(output_frame, c, -1, BORDER_COLOUR, BORDER_THICKNESS)
+            # Draw centre circle on output frame
+            cv.circle(output_frame, (cx, cy), CENTRE_RADIUS, CENTRE_COLOUR, -1)
+            # Put text on output frame
+            cv.putText(output_frame, MESSAGE, (cx, cy), cv.FONT_HERSHEY_SIMPLEX, 1, TEXT_COLOR, 1)  # put text
 
-    if colourBB is not None:
-        x1, y1, x2, y2 = colourBB
-
-        frame = cv.rectangle(frame, (x1, y1), (x2, y2), BB_COLOUR, BB_THICKNESS)
-
-    # showing the image
-    # string parameter is title of video feed
-    cv.imshow('frame', frame)
+    # Show image:
+    cv.imshow("Red Detector", output_frame)
 
     # waitKey(0) produces still images until
     # a key is pressed. Parameter of 1 produces
