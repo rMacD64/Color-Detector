@@ -6,11 +6,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from skimage import exposure
 from skimage.exposure import match_histograms
-import cv2 
+import cv2
+import imutils
 from util2 import calibrate
 from util2 import colour_limits
-  
-r, g, b = calibrate()
+
+BORDER_COLOUR = (255, 0, 0)
+BORDER_THICKNESS = 3
+CENTRE_COLOUR = (0, 255, 0)
+CENTRE_RADIUS = 5
+TEXT_COLOR = (0, 255, 0)
+THRESHOLD = 100 # can be adjusted to determine the distance at which we should identify objects
+
+r = calibrate()
 h_tol = 5
 s_tol = 10
 v_tol = 20
@@ -89,24 +97,27 @@ while(1):
     #                            mask = blue_mask) 
    
     # Creating contour to track red color 
-    contours, hierarchy = cv2.findContours(red_mask, 
-                                           cv2.RETR_TREE, 
-                                           cv2.CHAIN_APPROX_SIMPLE) 
+    contours = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
 
-    for pic, contour in enumerate(contours): 
-        area = cv2.contourArea(contour) 
-        if(area > 300): 
-            x, y, w, h = cv2.boundingRect(contour) 
-            cx = int(x + w/2)
-            cy = int(y + h/2)
+    for contour in contours:
+        if (cv2.contourArea(contour) > 300):
+            M = cv2.moments(contour)
+            cx = int(M['m10'] / (M['m00'] + 1e-5))  # calculate X position and add 1e-5 to avoid division by 0
+            cy = int(M['m01'] / (M['m00'] + 1e-5))  # calculate Y position
             
             # imageFrame = cv2.rectangle(imageFrame, (x, y),  
             #                            (x + w, y + h),  
             #                            (0, 0, 255), 2) 
-              
-            cv2.putText(imageFrame, "Red Colour", (x, y), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 1.0, 
-                        (0, 0, 255))   
+
+            # Draw contours on output frame
+            cv2.drawContours(imageFrame, contour, -1, BORDER_COLOUR, BORDER_THICKNESS)
+            # Draw centre circle on output frame
+            cv2.circle(imageFrame, (cx, cy), CENTRE_RADIUS, CENTRE_COLOUR, -1)
+            # Put text on output frame
+            cv2.putText(imageFrame, str(cx) + ',' + str(cy), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, TEXT_COLOR, 1)
+
+            # Identify if centre is over button
             if cx >= b1_x and cx <= b1_x + b1_w and cy >= b1_y and cy <= b1_y + b1_h:
                 cv2.rectangle(imageFrame, (b1_x, b1_y), (b1_x + b1_w, b1_y + b1_h), (0, 255, 0), -1) 
             if cx >= b2_x and cx <= b2_x + b2_w and cy >= b2_y and cy <= b2_y + b2_h:

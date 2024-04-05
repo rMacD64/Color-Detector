@@ -10,13 +10,24 @@ def colour_limits(c, h_tol, s_tol, v_tol):
     # commonly used for object tracking
 
     # not sure what this does...
-    lowLimit = np.array([max(0,c[0]-h_tol), max(0,c[1]-s_tol), max(0,c[2]-v_tol)], np.uint8)
-    upLimit = np.array([min(179,c[0]+h_tol), min(255,c[1]+s_tol), min(255,c[2]+v_tol)], np.uint8)
+    lowLimit = np.array([max(0, c[0]-h_tol), max(0, c[1]-s_tol), max(0, c[2]-v_tol)], np.uint8)
+    upLimit = np.array([min(179, c[0]+h_tol), min(255, c[1]+s_tol), min(255, c[2]+v_tol)], np.uint8)
 
     return lowLimit, upLimit
 
+'''
+Parameters
+----------
+webcam : video capture object
+    Current webcam
+Returns
+---------
+red : 
+green :
+blue :   
+'''
 def calibrate():
-    webcam = cv2.VideoCapture(0) 
+    webcam = cv2.VideoCapture(0)
   
     # Start a while loop 
     while(1): 
