@@ -69,9 +69,9 @@ while(1):
     # Convert the imageFrame in  
     # BGR(RGB color space) to  
     # LAB color space
-    labFrame = cv2.bilateralFilter(imageFrame,10,100,100)
-    cv2.imshow("blur", labFrame)
-    labFrame = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2LAB)
+    blurFrame = cv2.bilateralFilter(imageFrame,10,100,100)
+    cv2.imshow("blur", blurFrame)
+    labFrame = cv2.cvtColor(blurFrame, cv2.COLOR_BGR2LAB)
     
 
     # calibrate
