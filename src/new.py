@@ -22,7 +22,7 @@ TEXT_COLOR = (0, 255, 0)
 TEXT_SCALE = 0.5
 THRESHOLD = 100 # can be adjusted to determine the distance at which we should identify objects
 
-L_TOL = 50
+L_TOL = 80
 A_TOL = 10
 B_TOL = 10
 
@@ -69,8 +69,7 @@ while(1):
     # Convert the imageFrame in  
     # BGR(RGB color space) to  
     # LAB color space
-    blurFrame = cv2.bilateralFilter(imageFrame,10,100,100)
-    cv2.imshow("blur", blurFrame)
+    blurFrame = cv2.bilateralFilter(imageFrame, 10, 100, 100)
     labFrame = cv2.cvtColor(blurFrame, cv2.COLOR_BGR2LAB)
     
 
@@ -101,8 +100,8 @@ while(1):
       
     # For red color 
     red_mask = cv2.dilate(red_mask, kernel) 
-    res_red = cv2.bitwise_and(imageFrame, imageFrame,  
-                              mask = red_mask) 
+    # res_red = cv2.bitwise_and(labFrame, labFrame,
+    #                           mask = red_mask)
       
     # For green color 
     # green_mask = cv2.dilate(green_mask, kernel) 
