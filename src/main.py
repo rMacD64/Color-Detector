@@ -63,7 +63,7 @@ while True:
             # Draw centre circle on output frame
             cv.circle(output_frame, (cx, cy), CENTRE_RADIUS, CENTRE_COLOUR, -1)
             # Put text on output frame
-            cv.putText(output_frame, str(cx) + ',' + str(cy), (cx, cy), cv.FONT_HERSHEY_SIMPLEX, 1, TEXT_COLOR, 1)  # put text
+            cv.putText(output_frame, str(cx) + ',' + str(cy), (cx, cy), cv.FONT_HERSHEY_SIMPLEX, 1, TEXT_COLOR, 1)
 
     # Show image:
     cv.imshow("Red Detector", output_frame)

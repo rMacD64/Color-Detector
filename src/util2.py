@@ -5,15 +5,11 @@ from skimage import exposure
 from skimage.exposure import match_histograms
 import cv2
 
-def colour_limits(c, h_tol, s_tol, v_tol):
-    # converts bgr values to hsv colour space
-    # commonly used for object tracking
+def colour_limits(c, l_tol, a_tol, b_tol):
+    lower_limit = np.array([max(0, c[0] - l_tol), max(1, c[1] - a_tol), max(1, c[2] - b_tol)], np.uint8)
+    upper_imit = np.array([min(255, c[0] + l_tol), min(255, c[1] + a_tol), min(255, c[2] + b_tol)], np.uint8)
 
-    # not sure what this does...
-    lowLimit = np.array([max(0, c[0]-h_tol), max(0, c[1]-s_tol), max(0, c[2]-v_tol)], np.uint8)
-    upLimit = np.array([min(179, c[0]+h_tol), min(255, c[1]+s_tol), min(255, c[2]+v_tol)], np.uint8)
-
-    return lowLimit, upLimit
+    return lower_limit, upper_imit
 
 '''
 Parameters
@@ -22,9 +18,7 @@ webcam : video capture object
     Current webcam
 Returns
 ---------
-red : 
-green :
-blue :   
+red :  
 '''
 def calibrate():
     webcam = cv2.VideoCapture(0)
@@ -32,7 +26,7 @@ def calibrate():
     # Start a while loop 
     while(1): 
         _, frame = webcam.read()
-        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        lab_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
         height, width, _ = frame.shape
 
         # locate centre
@@ -43,13 +37,13 @@ def calibrate():
         cv2.imshow("calibration", frame)
         key = cv2.waitKey(1)
         if key == 114: # pressed r
-            red = hsv_frame[cy, cx]
+            red = lab_frame[cy, cx]
             print(red)
         if key == 103: # pressed g
-            green = hsv_frame[cy, cx]
+            green = lab_frame[cy, cx]
             print(green)
         if key == 98: # pressed b
-            blue = hsv_frame[cy, cx]
+            blue = lab_frame[cy, cx]
             print(blue)
         if key == 32: # pressed space
             webcam.release() 

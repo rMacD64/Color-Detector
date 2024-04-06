@@ -15,13 +15,19 @@ BORDER_COLOUR = (255, 0, 0)
 BORDER_THICKNESS = 3
 CENTRE_COLOUR = (0, 255, 0)
 CENTRE_RADIUS = 5
+CAL_RADIUS = 5
+CAL_THICKNESS = 2
+CAL_COLOR = (255, 0 , 0)
 TEXT_COLOR = (0, 255, 0)
+TEXT_SCALE = 0.5
 THRESHOLD = 100 # can be adjusted to determine the distance at which we should identify objects
 
-r = calibrate()
-h_tol = 5
-s_tol = 10
-v_tol = 20
+L_TOL = 10
+A_TOL = 20
+B_TOL = 20
+
+# Default r based on previous methods
+r = np.array([int((190 - 20)/2) + 20, int((255 - 150)/2) + 150, int((255 - 150)/2) + 150])
 
 # Capturing video through webcam 
 webcam = cv2.VideoCapture(0) 
@@ -53,17 +59,26 @@ while(1):
     cv2.rectangle(imageFrame, (screen_x, screen_y), (screen_x + screen_w, screen_y + screen_h), (0, 255, 0), 2)
     cv2.rectangle(imageFrame, (b1_x, b1_y), (b1_x + b1_w, b1_y + b1_h), (0, 255, 0), 2)
     cv2.rectangle(imageFrame, (b2_x, b2_y), (b2_x + b2_w, b2_y + b2_h), (0, 255, 0), 2)
-  
+
+    # calibration point
+    cal_x = int(width/2)
+    cal_y = int(screen_y + screen_h + 30)
+    cv2.circle(imageFrame, (cal_x, cal_y), CAL_RADIUS, CAL_COLOR, CAL_THICKNESS)
+    cv2.putText(imageFrame, "Press 'c' to calibrate!", (cal_x, cal_y), cv2.FONT_HERSHEY_SIMPLEX, TEXT_SCALE, TEXT_COLOR, 1)
+
     # Convert the imageFrame in  
     # BGR(RGB color space) to  
-    # HSV(hue-saturation-value) 
-    # color space 
-    hsvFrame = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2HSV)
+    # LAB color space
+    labFrame = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2LAB)
+
+    # calibrate
+    if cv2.waitKey(1) == 99:  # press c
+        r = labFrame[cal_y, cal_x]
+        print(r)
   
-    # Set range for red color and  
-    # define mask 
-    red_lower, red_upper = colour_limits(r, h_tol, s_tol, v_tol) 
-    red_mask = cv2.inRange(hsvFrame, red_lower, red_upper) 
+    # Set range for red color and define mask
+    red_lower, red_upper = colour_limits(r, L_TOL, A_TOL, B_TOL)
+    red_mask = cv2.inRange(labFrame, red_lower, red_upper)
   
     # # Set range for green color and  
     # # define mask 
@@ -101,7 +116,7 @@ while(1):
     contours = imutils.grab_contours(contours)
 
     for contour in contours:
-        if (cv2.contourArea(contour) > 300):
+        if (cv2.contourArea(contour) > THRESHOLD):
             M = cv2.moments(contour)
             cx = int(M['m10'] / (M['m00'] + 1e-5))  # calculate X position and add 1e-5 to avoid division by 0
             cy = int(M['m01'] / (M['m00'] + 1e-5))  # calculate Y position
@@ -121,9 +136,7 @@ while(1):
             if cx >= b1_x and cx <= b1_x + b1_w and cy >= b1_y and cy <= b1_y + b1_h:
                 cv2.rectangle(imageFrame, (b1_x, b1_y), (b1_x + b1_w, b1_y + b1_h), (0, 255, 0), -1) 
             if cx >= b2_x and cx <= b2_x + b2_w and cy >= b2_y and cy <= b2_y + b2_h:
-                cv2.rectangle(imageFrame, (b2_x, b2_y), (b2_x + b2_w, b2_y + b2_h), (0, 0, 255), -1) 
-            
-            cv2.circle(imageFrame, (cx, cy), 3, (255, 0, 0), 3) # center point of red area
+                cv2.rectangle(imageFrame, (b2_x, b2_y), (b2_x + b2_w, b2_y + b2_h), (0, 0, 255), -1)
   
     # # Creating contour to track green color 
     # contours, hierarchy = cv2.findContours(green_mask, 
@@ -156,15 +169,10 @@ while(1):
               
     #         cv2.putText(imageFrame, "Blue Colour", (x, y), 
     #                     cv2.FONT_HERSHEY_SIMPLEX, 
-    #                     1.0, (255, 0, 0)) 
-
-
-    # calibrate again
-    if cv2.waitKey(1) == 99: # press c
-        r,g,b = calibrate() 
+    #                     1.0, (255, 0, 0))
        
     # Program Termination 
-    cv2.imshow("Multiple Color Detection in Real-TIme", imageFrame) 
+    cv2.imshow("Color Detection in Real-Time", imageFrame)
     if cv2.waitKey(10) & 0xFF == ord('q'): 
         webcam.release() 
         cv2.destroyAllWindows() 
