@@ -22,9 +22,9 @@ TEXT_COLOR = (0, 255, 0)
 TEXT_SCALE = 0.5
 THRESHOLD = 100 # can be adjusted to determine the distance at which we should identify objects
 
-L_TOL = 10
-A_TOL = 20
-B_TOL = 20
+L_TOL = 50
+A_TOL = 10
+B_TOL = 10
 
 # Default r based on previous methods
 r = np.array([int((190 - 20)/2) + 20, int((255 - 150)/2) + 150, int((255 - 150)/2) + 150])
@@ -69,7 +69,10 @@ while(1):
     # Convert the imageFrame in  
     # BGR(RGB color space) to  
     # LAB color space
+    labFrame = cv2.bilateralFilter(imageFrame,10,100,100)
+    cv2.imshow("blur", labFrame)
     labFrame = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2LAB)
+    
 
     # calibrate
     if cv2.waitKey(1) == 99:  # press c
