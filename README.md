@@ -7,6 +7,7 @@ In the first iteration of the colour detection model, a simple online tutorial w
 
 <p align="center">
 <img src="https://github.com/rMacD64/Color-Detector/assets/91086955/da0798d2-b841-4842-b2b6-9a454040fd7a"\>
+<em>Figure 1. Video output from colour detection version 1.</em>
 </p>
 
 However, as seen above from the top part of Figure 1B, the first version of the colour detection model would not detect all colours the human eye would normally perceive as red. Since different camera modalities and lighting conditions may impact how the computer perceives colours, it was necessary to improve the range of reds which the model detected. Additionally, as seen in Figure 1C the bounding box would expand to fit all red objects in view. This was not ideal for our purposes because it meant multiple fingertips in the frame would be merged into one box; specific finger tips could not be monitored simultaneously.
