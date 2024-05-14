@@ -6,7 +6,7 @@ The colour detection model uses Python and the Open CV Python library to analyze
 In the first iteration of the colour detection model, a simple online tutorial was followed, which detected a range of yellow colours in the HSV colour space, created a mask for such colours and created a green bounding box around all pixels included in the mask (link). The code was modified to detect red colours instead, as shown below in Figure 1A.
 
 <p align="center">
-  <img src="https://github.com/rMacD64/Color-Detector/assets/91086955/da0798d2-b841-4842-b2b6-9a454040fd7a">
+  <img src="https://github.com/rMacD64/Color-Detector/assets/91086955/da0798d2-b841-4842-b2b6-9a454040fd7a"><br>
   <i>Figure 1. Video output from colour detection version 1.</i>
 </p>
 
