@@ -18,10 +18,7 @@ In the second iteration of the colour detection model, several pieces of researc
 Table 3. Colour spaces, lower and upper range and associated accuracy.
 | HSV colour space: [160, 50, 50] to [180, 255, 255] | HSV colour space: [161, 165, 127] to [178, 255, 255] | LAB colour space: [20, 150, 150] to [190, 255, 255] |
 |---|---|---|
-| ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/00ad18e8-e3b5-482a-9f9b-18cc42fbc221)
- | ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/55396444-dbcc-4ee9-a484-160b48ff3dca)
- | ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/22491075-0d46-44c8-844d-845d646563a8)
- |
+| ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/00ad18e8-e3b5-482a-9f9b-18cc42fbc221) | ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/55396444-dbcc-4ee9-a484-160b48ff3dca) | ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/22491075-0d46-44c8-844d-845d646563a8) |
 
 The code resources were merged and modified. Ultimately the model used the LAB colour space and blurring effects to accurately create a mask for red coloured objects. If red-coloured objects covered a certain portion of the screen, the model outlined the object in blue, created a green centre point and indicated the pixel coordinates of the centre point on the output video (see Figure 2).
 
