@@ -16,15 +16,12 @@ However, as seen above from the top part of Figure 1B, the first version of the 
 In the second iteration of the colour detection model, several pieces of researched code were merged and modified. One detected red colours in the LAB colour space and used blurring methods to increase accuracy of detection (link). It also placed a circular bounding box around red objects (link). Another model created an outline and centre point on an image showing a masked object (link) and another model created an outline, centre point and text indicating the colour of several various coloured objects (link). The latter model also required coloured objects to cover a minimum portion of the screen, so coloured objects far from the camera would not be detected (link). The latter model was tested with two HSV colour ranges and the recommended LAB range from the first code segment, but as seen in Table 3, the LAB colour range appeared to be the most accurate.
 
 Table 3. Colour spaces, lower and upper range and associated accuracy.
-
-
-HSV colour space: [160, 50, 50] to [180, 255, 255]
-HSV colour space: [161, 165, 127] to [178, 255, 255]
-LAB colour space: [20, 150, 150] to [190, 255, 255]
-Resulting Output
-
-
-
+| HSV colour space: [160, 50, 50] to [180, 255, 255] | HSV colour space: [161, 165, 127] to [178, 255, 255] | LAB colour space: [20, 150, 150] to [190, 255, 255] |
+|---|---|---|
+| ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/00ad18e8-e3b5-482a-9f9b-18cc42fbc221)
+ | ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/55396444-dbcc-4ee9-a484-160b48ff3dca)
+ | ![image](https://github.com/rMacD64/Color-Detector/assets/91086955/22491075-0d46-44c8-844d-845d646563a8)
+ |
 
 The code resources were merged and modified. Ultimately the model used the LAB colour space and blurring effects to accurately create a mask for red coloured objects. If red-coloured objects covered a certain portion of the screen, the model outlined the object in blue, created a green centre point and indicated the pixel coordinates of the centre point on the output video (see Figure 2).
 
